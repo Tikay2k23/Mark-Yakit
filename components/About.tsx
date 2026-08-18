@@ -11,22 +11,20 @@ import {
 } from "lucide-react";
 import {
   FaFacebookF,
+  FaGithub,
   FaInstagram,
   FaLinkedinIn,
   FaWhatsapp,
-  FaXTwitter,
 } from "react-icons/fa6";
 import { useLayoutEffect, useRef, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import SectionHeading from "./SectionHeading";
 
-// Replace with Mark's preferred public email before launch.
 const EMAIL = "info.yakit@gmail.com";
 const CALENDAR_URL = "https://calendar.app.google/ypbJ6dDfSNKwwfxA9";
 
-// Replace these profile URLs with Mark's public social accounts.
 const SOCIAL_LINKS = [
-  { label: "X", href: "https://x.com/", icon: FaXTwitter },
+  { label: "GitHub", href: "https://github.com/Tikay2k23", icon: FaGithub },
   {
     label: "Instagram",
     href: "https://www.instagram.com/info.yakit",
