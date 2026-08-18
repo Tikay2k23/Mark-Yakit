@@ -23,6 +23,9 @@ const PROFILE = {
   location: "Full-Stack Web Developer",
   portraitSrc: "/images/graduation-photo-original-quality.webp",
   backgroundVideoSrc: "/images/background-loop.mp4",
+  // Still frame of the background video, shown whenever the video is not
+  // actually playing. Regenerate this if the video is replaced.
+  backgroundStillSrc: "/images/hero-still.webp",
 };
 
 const smoothEase = [0.22, 1, 0.36, 1] as const;
@@ -35,6 +38,7 @@ const revealTransition: Transition = {
 export default function Hero() {
   const [portraitAvailable, setPortraitAvailable] = useState(true);
   const [videoAvailable, setVideoAvailable] = useState(true);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const cardPinRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -266,22 +270,47 @@ export default function Hero() {
       onPointerLeave={resetPortrait}
     >
       <div className="hero-stage relative h-[100svh] overflow-hidden">
+        {/* iOS refuses autoplay in Low Power Mode, in Low Data Mode, and when
+            Safari's per-site auto-play is turned off, then draws its own
+            tap-to-play control over the video. That control cannot reliably be
+            styled away on iOS, so the video is kept invisible until it is
+            genuinely playing and this still frame stands in for it. It also
+            gives an immediate backdrop while the video downloads. */}
+        <Image
+          src={PROFILE.backgroundStillSrc}
+          alt=""
+          aria-hidden="true"
+          fill
+          priority
+          sizes="100vw"
+          className={`hero-video hero-media-still object-cover${
+            videoPlaying ? " is-hidden" : ""
+          }`}
+        />
+
         {videoAvailable ? (
           <video
             ref={videoRef}
             aria-hidden="true"
-            className="hero-video absolute inset-0 h-full w-full object-cover"
+            className={`hero-video hero-media-video absolute inset-0 h-full w-full object-cover${
+              videoPlaying ? " is-playing" : ""
+            }`}
             autoPlay
             muted
             loop
             playsInline
             preload="metadata"
+            onPlaying={() => setVideoPlaying(true)}
+            onPause={() => setVideoPlaying(false)}
             onCanPlay={() => {
               if (videoRef.current) {
                 void videoRef.current.play().catch(() => undefined);
               }
             }}
-            onError={() => setVideoAvailable(false)}
+            onError={() => {
+              setVideoAvailable(false);
+              setVideoPlaying(false);
+            }}
           >
             <source src={PROFILE.backgroundVideoSrc} type="video/mp4" />
           </video>

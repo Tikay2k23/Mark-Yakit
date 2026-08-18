@@ -133,11 +133,32 @@ textarea:focus-visible {
   z-index: 1;
 }
 
+/* Kept as defence in depth. macOS Safari honours these; iOS does not, which is
+   why the video is hidden outright until it reports that it is playing. */
 .hero-video::-webkit-media-controls,
 .hero-video::-webkit-media-controls-panel,
 .hero-video::-webkit-media-controls-start-playback-button {
   display: none !important;
   -webkit-appearance: none;
+}
+
+.hero-video.hero-media-still,
+.hero-video.hero-media-video {
+  transition: opacity 700ms ease;
+}
+
+/* Invisible until the video actually reports playback, so a blocked autoplay
+   can never paint iOS's tap-to-play control over the hero. */
+.hero-video.hero-media-video {
+  opacity: 0;
+}
+
+.hero-video.hero-media-video.is-playing {
+  opacity: 0.9;
+}
+
+.hero-video.hero-media-still.is-hidden {
+  opacity: 0;
 }
 
 .hero-bottom-fade {
