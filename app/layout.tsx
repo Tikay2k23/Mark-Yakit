@@ -54,6 +54,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Scroll-reveal starts hidden and is revealed by IntersectionObserver.
+            Without scripting nothing would ever reveal it, so this forces the
+            content visible in that case. A <noscript> style is used rather than
+            a class set by an inline script, which would desync hydration. */}
+        <noscript>
+          <style>{
+            ".reveal{opacity:1!important;transform:none!important;filter:none!important}"
+          }</style>
+        </noscript>
+      </head>
       <body>
         <SmoothScroll />
         {children}
