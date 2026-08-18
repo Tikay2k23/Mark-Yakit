@@ -39,7 +39,7 @@ export default function SectionHeading({
       <ScrollReveal delay={0.08} className="section-heading-copy">
         <h2 className={invert ? "text-[#f4f4ef]" : "text-[#20201f]"}>{heading}</h2>
         {copy ? (
-          <p className={invert ? "text-white/56" : "text-[#20201f]/58"}>{copy}</p>
+          <p className={invert ? "text-white/60" : "text-[#20201f]/65"}>{copy}</p>
         ) : null}
       </ScrollReveal>
     </div>

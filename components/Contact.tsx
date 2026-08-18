@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Mail, MapPin, Radio } from "lucide-react";
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import SectionHeading from "./SectionHeading";
 
@@ -23,22 +23,62 @@ const SOCIAL_LINKS = [
   },
 ];
 
+type Status =
+  | { kind: "idle" }
+  | { kind: "opening" }
+  | { kind: "fallback"; copied: boolean };
+
 export default function Contact() {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const fallbackTimer = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (fallbackTimer.current !== null) {
+        window.clearTimeout(fallbackTimer.current);
+      }
+    },
+    [],
+  );
 
   const submitForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
+    const data = new FormData(event.currentTarget);
     const name = String(data.get("name") ?? "");
     const email = String(data.get("email") ?? "");
     const projectType = String(data.get("projectType") ?? "");
     const message = String(data.get("message") ?? "");
-    const subject = encodeURIComponent(`${projectType || "Portfolio inquiry"} from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    const subject = `${projectType || "Portfolio inquiry"} from ${name}`;
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
 
-    setStatus("Opening your email app...");
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+    setStatus({ kind: "opening" });
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+
+    // A mailto: link fails silently when no mail client is registered. If this
+    // page still holds focus a moment later, nothing opened: surface the address
+    // and put the drafted message on the clipboard so it is not lost.
+    if (fallbackTimer.current !== null) {
+      window.clearTimeout(fallbackTimer.current);
+    }
+
+    fallbackTimer.current = window.setTimeout(() => {
+      if (document.hidden || !document.hasFocus()) {
+        setStatus({ kind: "idle" });
+        return;
+      }
+
+      const copying = navigator.clipboard?.writeText(`${subject}\n\n${body}`);
+      if (!copying) {
+        setStatus({ kind: "fallback", copied: false });
+        return;
+      }
+
+      copying
+        .then(() => setStatus({ kind: "fallback", copied: true }))
+        .catch(() => setStatus({ kind: "fallback", copied: false }));
+    }, 2000);
   };
 
   return (
@@ -133,7 +173,18 @@ export default function Contact() {
                   Start a conversation
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
-                <p aria-live="polite">{status}</p>
+                <p aria-live="polite" className="form-status">
+                  {status.kind === "opening" ? "Opening your email app..." : null}
+                  {status.kind === "fallback" ? (
+                    <>
+                      {status.copied
+                        ? "Message copied to your clipboard. "
+                        : "Your email app did not open. "}
+                      You can reach me directly at{" "}
+                      <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+                    </>
+                  ) : null}
+                </p>
               </div>
             </form>
           </ScrollReveal>

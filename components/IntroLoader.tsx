@@ -42,7 +42,7 @@ export default function IntroLoader() {
               >
                 MARK YAKIT
               </motion.span>
-              <span className="text-[10px] font-bold uppercase text-white/42">Portfolio 2026</span>
+              <span className="text-[10px] font-bold uppercase text-white/60">Portfolio 2026</span>
             </div>
             <div className="mt-4 h-px overflow-hidden bg-white/14">
               <motion.div

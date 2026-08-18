@@ -294,14 +294,14 @@ export default function Hero() {
           <motion.div
             initial="hidden"
             animate="show"
-            className="grid items-center gap-4 sm:gap-6 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_270px_minmax(0,1fr)] lg:gap-16 xl:gap-24"
+            className="grid items-center gap-0 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_270px_minmax(0,1fr)] lg:gap-16 xl:gap-24"
           >
             <motion.div
               ref={leftCopyRef}
-              className="order-2 text-center lg:order-1 lg:pt-10 lg:text-left"
+              className="order-2 text-left lg:order-1 lg:pt-10 lg:text-left"
             >
               <Reveal delay={0.16}>
-                <p className="mb-4 text-base font-medium text-[#777] sm:mb-6 sm:text-xl lg:mb-6 lg:whitespace-nowrap lg:text-sm xl:text-base">
+                <p className="mb-3 text-[0.84rem] font-medium text-[#5f5f5f] sm:mb-5 sm:text-lg lg:mb-6 lg:whitespace-nowrap lg:text-sm xl:text-base">
                   {PROFILE.roleLead}
                 </p>
               </Reveal>
@@ -322,14 +322,14 @@ export default function Hero() {
                 aria-hidden="true"
                 animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
                 transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-[2.4rem] bg-white/75 blur-3xl"
+                className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[420px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-[2.4rem] bg-white/75 blur-3xl lg:block"
               />
 
               <motion.div
                 initial={{ opacity: 0, y: 36, scale: 0.92, rotate: -1.5 }}
                 animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
                 transition={{ delay: 0.28, duration: 1.05, ease: smoothEase }}
-                className="portrait-card-face relative mx-auto"
+                className="portrait-card-face relative lg:mx-auto"
               >
                 <div ref={cardRef} className="scroll-card absolute inset-0">
                   <div ref={cardFrontRef} className="scroll-card-face scroll-card-front">
@@ -339,7 +339,7 @@ export default function Hero() {
                         alt={`${PROFILE.displayName} portrait`}
                         fill
                         priority
-                        sizes="(max-width: 768px) 72vw, 270px"
+                        sizes="(max-width: 999px) 66px, 270px"
                         className="object-cover object-top"
                         onError={() => setPortraitAvailable(false)}
                       />
@@ -384,19 +384,25 @@ export default function Hero() {
 
             <motion.div
               ref={rightCopyRef}
-              className="order-3 text-center lg:translate-y-2 lg:pt-20 lg:text-right"
+              className="order-3 flex flex-col text-left lg:block lg:translate-y-2 lg:pt-20 lg:text-right"
             >
-              <Reveal delay={0.24}>
-                <p className="mb-4 text-base font-medium text-[#777] sm:mb-6 sm:text-xl lg:mb-6 lg:text-base">
-                  {PROFILE.roleTitle}
-                </p>
-              </Reveal>
-              <Reveal delay={0.3}>
-                <NameReveal name={PROFILE.lastName} className="hero-name-right" />
-              </Reveal>
-              <div className="lg:translate-y-4">
+              {/* Stacked mobile order keeps both name lines together and moves
+                  the role text below them; on lg the source order applies. */}
+              <div className="order-2">
+                <Reveal delay={0.24}>
+                  <p className="mt-6 text-[0.84rem] font-medium text-[#5f5f5f] sm:mt-8 sm:text-lg lg:mb-6 lg:mt-0 lg:text-base">
+                    {PROFILE.roleTitle}
+                  </p>
+                </Reveal>
+              </div>
+              <div className="order-1">
+                <Reveal delay={0.3}>
+                  <NameReveal name={PROFILE.lastName} className="hero-name-right" />
+                </Reveal>
+              </div>
+              <div className="order-3 lg:translate-y-4">
                 <Reveal delay={0.38}>
-                  <p className="mt-4 text-base font-medium text-[#9a9a9a] sm:mt-6 sm:text-xl lg:mt-6 lg:text-base">
+                  <p className="mt-1 text-[0.84rem] font-medium text-[#6b6b6b] sm:mt-1.5 sm:text-lg lg:mt-6 lg:text-base">
                     {PROFILE.location}
                   </p>
                 </Reveal>

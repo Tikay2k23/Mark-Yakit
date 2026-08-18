@@ -6,6 +6,14 @@
   --awb-color1: #f2f2f0;
   --background: #f2f2f0;
   --foreground: #292929;
+
+  /* Brand orange is reserved for fills and decoration: at 2.5:1 on the light
+     background it cannot legibly carry text. Accent text uses the darker pair
+     below, split by the size at which WCAG AA relaxes from 4.5:1 to 3:1. */
+  --accent: #ef7c00;
+  --accent-display: #c96800; /* accent text >= 24px, and focus rings (3:1) */
+  --accent-text: #a85400; /* accent text < 24px (4.5:1) */
+  --on-accent: #20201f; /* text sitting on an --accent fill (5.9:1) */
 }
 
 * {
@@ -52,7 +60,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #ef7c00;
+  outline: 2px solid var(--accent-display);
   outline-offset: 3px;
 }
 
@@ -352,7 +360,7 @@ textarea:focus-visible {
   gap: 0.75rem;
   align-self: start;
   padding-top: 0.55rem;
-  color: rgba(32, 32, 31, 0.52);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -366,7 +374,14 @@ textarea:focus-visible {
   height: 2rem;
   border: 1px solid rgba(32, 32, 31, 0.16);
   border-radius: 50%;
-  color: #ef7c00;
+  color: var(--accent-text);
+}
+
+/* --accent-text is tuned for the light background and goes too dark on the
+   inverted sections; there the brand orange is the legible one (6.6:1). */
+.reviews-section .section-heading-meta span:first-child,
+.contact-section .section-heading-meta span:first-child {
+  color: var(--accent);
 }
 
 .section-heading-copy h2 {
@@ -379,7 +394,7 @@ textarea:focus-visible {
 }
 
 .section-heading-accent {
-  color: #ef7c00;
+  color: var(--accent-display);
 }
 
 .section-heading-copy > p {
@@ -407,7 +422,7 @@ textarea:focus-visible {
 
 .service-index,
 .highlight-number {
-  color: rgba(32, 32, 31, 0.36);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.72rem;
   font-weight: 800;
 }
@@ -415,7 +430,7 @@ textarea:focus-visible {
 .service-category {
   display: block;
   margin-bottom: 0.65rem;
-  color: #ef7c00;
+  color: var(--accent-text);
   font-size: 0.67rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -431,7 +446,7 @@ textarea:focus-visible {
 
 .service-row > p {
   max-width: 34rem;
-  color: rgba(32, 32, 31, 0.58);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.92rem;
   line-height: 1.7;
 }
@@ -490,13 +505,13 @@ textarea:focus-visible {
 }
 
 .skills-reference-title span {
-  color: #ef7c00;
+  color: var(--accent-display);
 }
 
 .skills-reference-copy {
   max-width: 42rem;
   margin-top: 1.45rem;
-  color: rgba(32, 32, 31, 0.52);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.98rem;
   line-height: 1.55;
 }
@@ -565,7 +580,7 @@ textarea:focus-visible {
 .skills-offset-card > p {
   max-width: 39rem;
   margin-top: 0.9rem;
-  color: rgba(32, 32, 31, 0.58);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.92rem;
   line-height: 1.68;
 }
@@ -608,7 +623,7 @@ textarea:focus-visible {
 }
 
 .about-detail > p {
-  color: rgba(32, 32, 31, 0.62);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 1rem;
   line-height: 1.8;
 }
@@ -659,9 +674,9 @@ textarea:focus-visible {
 }
 
 .about-action-primary {
-  border-color: #ef7c00;
-  background: #ef7c00;
-  color: #fff;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .about-action-primary:hover {
@@ -779,8 +794,8 @@ textarea:focus-visible {
 }
 
 .button-orange {
-  background: #ef7c00;
-  color: white;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .button-orange:hover {
@@ -850,11 +865,11 @@ textarea:focus-visible {
 
 .highlight-row:hover {
   padding-inline: 0.75rem;
-  color: #ef7c00;
+  color: var(--accent-text);
 }
 
 .highlight-category {
-  color: rgba(32, 32, 31, 0.47);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.72rem;
   font-weight: 750;
   text-transform: uppercase;
@@ -902,12 +917,12 @@ textarea:focus-visible {
   transform: scale(1.12) translate3d(2%, -2%, 0);
 }
 
-.project-visual-orange { background: #dc6e00; color: #fff5ea; }
+.project-visual-orange { background: #ae5700; color: #fff5ea; }
 .project-visual-silver { background: #d3d6d4; color: #252624; }
 .project-visual-lime { background: #badc4e; color: #15200b; }
-.project-visual-blue { background: #4a78d4; color: #f4f7ff; }
-.project-visual-violet { background: #7967ba; color: #f7f4ff; }
-.project-visual-coral { background: #d96e61; color: #fff5f2; }
+.project-visual-blue { background: #436dc1; color: #f4f7ff; }
+.project-visual-violet { background: #7463b3; color: #f7f4ff; }
+.project-visual-coral { background: #ab574d; color: #fff5f2; }
 
 .project-browser-bar {
   position: absolute;
@@ -987,7 +1002,7 @@ textarea:focus-visible {
 .project-content span {
   display: block;
   margin-bottom: 0.5rem;
-  color: #ef7c00;
+  color: var(--accent-text);
   font-size: 0.66rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -1001,7 +1016,7 @@ textarea:focus-visible {
 }
 
 .project-content > p {
-  color: rgba(32, 32, 31, 0.57);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.84rem;
   line-height: 1.65;
 }
@@ -1063,7 +1078,7 @@ textarea:focus-visible {
 }
 
 .case-study-panel > p:first-of-type {
-  color: #ef7c00;
+  color: var(--accent-text);
   font-size: 0.68rem;
   font-weight: 850;
   text-transform: uppercase;
@@ -1091,7 +1106,7 @@ textarea:focus-visible {
 
 .case-study-panel h3 {
   margin-top: 2.25rem;
-  color: rgba(32, 32, 31, 0.48);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.68rem;
   font-weight: 850;
   text-transform: uppercase;
@@ -1099,7 +1114,7 @@ textarea:focus-visible {
 
 .case-study-body {
   margin-top: 0.75rem;
-  color: rgba(32, 32, 31, 0.64);
+  color: rgba(32, 32, 31, 0.65);
   line-height: 1.75;
 }
 
@@ -1124,7 +1139,7 @@ textarea:focus-visible {
 }
 
 .experience-number {
-  color: #ef7c00;
+  color: var(--accent-text);
   font-size: 0.74rem;
   font-weight: 850;
 }
@@ -1140,13 +1155,13 @@ textarea:focus-visible {
 .experience-row p {
   max-width: 700px;
   margin-top: 0.8rem;
-  color: rgba(32, 32, 31, 0.56);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.9rem;
   line-height: 1.7;
 }
 
 .experience-row time {
-  color: rgba(32, 32, 31, 0.48);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.75rem;
   font-weight: 750;
   text-align: right;
@@ -1163,7 +1178,7 @@ textarea:focus-visible {
 
 .reviews-section .section-heading-meta,
 .contact-section .section-heading-meta {
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .reviews-section .section-heading-meta span:first-child,
@@ -1220,7 +1235,7 @@ textarea:focus-visible {
 }
 
 .testimonial-card footer span {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.68rem;
   text-transform: uppercase;
 }
@@ -1256,7 +1271,7 @@ textarea:focus-visible {
 }
 
 .faq-item h3 i {
-  color: rgba(32, 32, 31, 0.38);
+  color: rgba(32, 32, 31, 0.65);
   font-size: 0.68rem;
   font-style: normal;
 }
@@ -1264,7 +1279,7 @@ textarea:focus-visible {
 .faq-item > div p {
   max-width: 760px;
   padding: 0 3rem 2rem;
-  color: rgba(32, 32, 31, 0.6);
+  color: rgba(32, 32, 31, 0.65);
   line-height: 1.75;
 }
 
@@ -1299,7 +1314,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.36);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -1361,7 +1376,7 @@ textarea:focus-visible {
 }
 
 .contact-form label > span {
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.68rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -1414,8 +1429,18 @@ textarea:focus-visible {
 }
 
 .form-submit p {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.72rem;
+}
+
+.form-status:empty {
+  display: none;
+}
+
+.form-status a {
+  color: #ffa23d;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .site-footer {
@@ -1470,7 +1495,7 @@ textarea:focus-visible {
 }
 
 .footer-bottom > div:first-child a {
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.75rem;
 }
 
@@ -1480,7 +1505,7 @@ textarea:focus-visible {
 }
 
 .footer-bottom nav a {
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.72rem;
   font-weight: 750;
 }
@@ -1494,7 +1519,7 @@ textarea:focus-visible {
   align-items: center;
   justify-content: flex-end;
   gap: 1rem;
-  color: rgba(255, 255, 255, 0.42);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.7rem;
 }
 
@@ -1932,13 +1957,47 @@ textarea:focus-visible {
 }
 
 @media (max-width: 380px) {
-  .portrait-card-face {
-    width: 235px;
-    height: 331px;
-  }
-
   .hero-actions {
     margin-top: 0.85rem;
+  }
+}
+
+/* Mobile hero: the portrait becomes a small circular avatar sitting above a
+   left-aligned, stacked name block.
+   Scoped below 1000px so it never overlaps the pinned card that GSAP drives
+   from (min-width: 1000px), and placed after the other hero breakpoints so it
+   wins the cascade on small screens. */
+@media (max-width: 999px) {
+  .journey-card-pin {
+    justify-self: start;
+    margin-bottom: 1.75rem;
+  }
+
+  .portrait-card-face {
+    width: 66px;
+    height: 66px;
+    perspective: none;
+  }
+
+  .scroll-card-face {
+    border-radius: 50%;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .scroll-card-front {
+    border-bottom-color: rgba(28, 28, 28, 0.08);
+    box-shadow: 0 8px 20px rgba(40, 40, 40, 0.16);
+  }
+
+  .scroll-card-bottom-fade {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero-name {
+    font-size: clamp(2.9rem, 14.5vw, 4.4rem);
   }
 }
 

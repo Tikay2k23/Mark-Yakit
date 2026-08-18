@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, Home, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import useScrollLock from "@/lib/useScrollLock";
 
 // Replace or reorder navigation links here.
 const NAV_LINKS = [
@@ -46,6 +47,8 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  useScrollLock(isMenuOpen);
+
   useEffect(() => {
     if (!isMenuOpen) return;
 
@@ -53,13 +56,9 @@ export default function Navbar() {
       if (event.key === "Escape") setIsMenuOpen(false);
     };
 
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
 
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [isMenuOpen]);
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -112,7 +111,7 @@ export default function Navbar() {
         <a
           href="#contact"
           aria-current={activeSection === "contact" ? "location" : undefined}
-          className="nav-contact-link hidden h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-[#ef7c00] px-5 text-[15px] font-extrabold text-white transition duration-300 hover:bg-[#ff8c08] hover:shadow-[0_0_34px_rgba(239,124,0,0.35)] md:inline-flex"
+          className="nav-contact-link hidden h-10 shrink-0 items-center whitespace-nowrap rounded-full bg-[#ef7c00] px-5 text-[15px] font-extrabold text-[#20201f] transition duration-300 hover:bg-[#ff8c08] hover:shadow-[0_0_34px_rgba(239,124,0,0.35)] md:inline-flex"
         >
           <span>
             <i>Contact me</i>

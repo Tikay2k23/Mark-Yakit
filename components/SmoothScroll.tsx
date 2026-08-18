@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { useEffect } from "react";
+import { setLenisInstance } from "@/lib/lenis";
 
 export default function SmoothScroll() {
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function SmoothScroll() {
       gsap.ticker.remove(onTick);
       lenis.destroy();
       lenis = null;
+      setLenisInstance(null);
       gsap.ticker.lagSmoothing(500, 33);
     };
 
@@ -37,13 +39,17 @@ export default function SmoothScroll() {
       lenis = new Lenis({
         anchors: { duration: 1.2, offset: 0 },
         autoRaf: false,
-        autoToggle: true,
+        // autoToggle owns the stopped state and makes lenis.stop() a no-op,
+        // which overlays rely on to pause scrolling. This effect already
+        // creates and destroys the instance per media query, so it is not needed.
+        autoToggle: false,
         lerp: 0.1,
         smoothWheel: true,
         syncTouch: false,
         wheelMultiplier: 0.92,
       });
 
+      setLenisInstance(lenis);
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(onTick);
       gsap.ticker.lagSmoothing(0);

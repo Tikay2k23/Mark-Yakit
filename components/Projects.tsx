@@ -12,9 +12,14 @@ import {
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import type { MouseEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import useScrollLock from "@/lib/useScrollLock";
 import ScrollReveal from "./ScrollReveal";
 import SectionHeading from "./SectionHeading";
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 type Project = {
   title: string;
@@ -99,20 +104,62 @@ const projects: Project[] = [
 export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const shouldReduceMotion = useReducedMotion();
+  const panelRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
+  useScrollLock(Boolean(activeProject));
+
+  // A callback ref runs the moment the panel lands in the DOM, which is more
+  // reliable than waiting a frame and assuming the ref is attached by then.
+  const attachPanel = useCallback((node: HTMLElement | null) => {
+    panelRef.current = node;
+    node
+      ?.querySelector<HTMLElement>(".case-study-close")
+      ?.focus({ preventScroll: true });
+  }, []);
+
+  const openProject = (
+    project: Project,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => {
+    // Remember where focus came from so it can be handed back on close.
+    triggerRef.current = event.currentTarget;
+    setActiveProject(project);
+  };
 
   useEffect(() => {
     if (!activeProject) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActiveProject(null);
+      if (event.key === "Escape") {
+        setActiveProject(null);
+        return;
+      }
+
+      const panel = panelRef.current;
+      if (event.key !== "Tab" || !panel) return;
+
+      // Keep Tab inside the dialog instead of walking the page behind it.
+      const focusable = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
       window.removeEventListener("keydown", onKeyDown);
+      triggerRef.current?.focus({ preventScroll: true });
     };
   }, [activeProject]);
 
@@ -138,7 +185,7 @@ export default function Projects() {
                 <article className="project-card group">
                   <button
                     type="button"
-                    onClick={() => setActiveProject(project)}
+                    onClick={(event) => openProject(project, event)}
                     className={`project-visual ${project.visual}`}
                     aria-label={`View case study: ${project.title}`}
                   >
@@ -160,7 +207,7 @@ export default function Projects() {
                     <p>{project.description}</p>
                     <button
                       type="button"
-                      onClick={() => setActiveProject(project)}
+                      onClick={(event) => openProject(project, event)}
                       className="project-link"
                     >
                       View case study
@@ -188,6 +235,7 @@ export default function Projects() {
             onClick={() => setActiveProject(null)}
           >
             <motion.article
+              ref={attachPanel}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 32, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={shouldReduceMotion ? undefined : { opacity: 0, y: 20, scale: 0.98 }}
